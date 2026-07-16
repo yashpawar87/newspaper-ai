@@ -1,0 +1,35 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-paper: #f6f4ee;
+  --color-ink: #1a1a17;
+  --color-ink-secondary: #5c5b54;
+  --color-canvas: #dcd8cc;
+  --color-live: #e4302c;
+}
+
+/* The canvas sits behind the paper "page" so the ivory card actually
+   reads as a distinct sheet floating above the surface, rather than
+   blending into an identically-colored background. */
+body {
+  background-color: var(--color-canvas);
+}
+
+@keyframes ticker {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-ticker {
+  animation: ticker 40s linear infinite;
+}
+
+.animate-ticker:hover {
+  animation-play-state: paused;
+}
