@@ -9,6 +9,9 @@ class Settings(BaseSettings):
     seed_on_startup: bool = True
     anthropic_api_key: str = ""
     admin_token: str = ""
+    enable_article_scraping: bool = True
+    enrich_batch_size: int = 10
+    enrich_interval_minutes: int = 30
 
     @property
     def sqlalchemy_database_url(self) -> str:

@@ -7,6 +7,7 @@ from apscheduler.triggers.interval import IntervalTrigger
 from app.config import settings
 from app.db.models import Source
 from app.db.session import SessionLocal
+from app.fetcher.enrich import enrich_pending_articles
 from app.fetcher.parser import fetch_source
 from app.fetcher.ranking import recompute_rankings
 
@@ -39,14 +40,24 @@ async def run_fetch_cycle() -> dict:
                     }
                 )
             recompute_rankings(db)
+            enriched = await enrich_pending_articles(db)
             return {
                 "status": "ok",
                 "source_count": len(sources),
                 "inserted": inserted_total,
+                "enriched": enriched,
                 "sources": source_results,
             }
         finally:
             db.close()
+
+
+async def run_enrich_cycle() -> None:
+    db = SessionLocal()
+    try:
+        await enrich_pending_articles(db)
+    finally:
+        db.close()
 
 
 def start_scheduler() -> AsyncIOScheduler:
@@ -56,6 +67,12 @@ def start_scheduler() -> AsyncIOScheduler:
         IntervalTrigger(minutes=settings.fetch_interval_minutes),
         id="fetch_feeds",
         next_run_time=None,  # first run kicked off manually on startup, see main.py
+    )
+    scheduler.add_job(
+        run_enrich_cycle,
+        IntervalTrigger(minutes=settings.enrich_interval_minutes),
+        id="enrich_articles",
+        next_run_time=None,  # enrichment runs after first fetch cycle completes
     )
     scheduler.start()
     return scheduler

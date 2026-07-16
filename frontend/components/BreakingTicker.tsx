@@ -1,7 +1,7 @@
 "use client";
 
+import Link from "next/link";
 import { Article } from "@/lib/types";
-import { registerClick } from "@/lib/api";
 
 export default function BreakingTicker({ articles }: { articles: Article[] }) {
   if (articles.length === 0) return null;
@@ -17,16 +17,13 @@ export default function BreakingTicker({ articles }: { articles: Article[] }) {
       <div className="relative flex-1 overflow-hidden py-1.5">
         <div className="flex w-max animate-ticker gap-10 whitespace-nowrap text-sm">
           {loop.map((article, i) => (
-            <a
+            <Link
               key={`${article.id}-${i}`}
-              href={article.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => registerClick(article.id)}
-              className="hover:underline"
+              href={`/article/${article.id}`}
+              className="hover:opacity-75 transition-opacity"
             >
               {article.title}
-            </a>
+            </Link>
           ))}
         </div>
       </div>

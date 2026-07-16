@@ -1,7 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { Article } from "@/lib/types";
-import { timeAgo, toParagraphs, registerClick } from "@/lib/api";
+import { timeAgo, toParagraphs } from "@/lib/api";
 
 export default function HeroArticle({
   article,
@@ -15,14 +16,9 @@ export default function HeroArticle({
   const isAiSummary = article.content_source === "ai_summary";
   const isScraped = article.content_source === "scraped";
 
-  const handleClick = () => registerClick(article.id);
-
   return (
     <article>
-      <div
-        onClick={handleClick}
-        className="group block cursor-default"
-      >
+      <Link href={`/article/${article.id}`} className="group block">
         <div className="relative mb-3 aspect-[21/9] overflow-hidden rounded bg-ink/5">
           {article.image_url ? (
             <img
@@ -54,10 +50,10 @@ export default function HeroArticle({
             </span>
           )}
         </div>
-        <h2 className="mt-1 font-display text-3xl font-medium leading-tight text-ink sm:text-4xl">
+        <h2 className="headline-link mt-1 font-display text-3xl font-medium leading-tight text-ink sm:text-4xl">
           {article.title}
         </h2>
-      </div>
+      </Link>
 
       <p className="mt-2 mb-5 font-mono text-[11px] text-ink/50">
         {timeAgo(article.published_at)}
@@ -79,8 +75,6 @@ export default function HeroArticle({
           ))}
         </div>
       )}
-
-
     </article>
   );
 }

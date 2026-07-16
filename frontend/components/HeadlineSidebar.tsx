@@ -1,7 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { Article } from "@/lib/types";
-import { timeAgo, toParagraphs, registerClick } from "@/lib/api";
+import { timeAgo, toParagraphs } from "@/lib/api";
 
 export default function HeadlineSidebar({
   articles,
@@ -20,18 +21,15 @@ export default function HeadlineSidebar({
       <ul className="space-y-4">
         {articles.map((article, i) => (
           <li key={article.id}>
-            <div
-              onClick={() => registerClick(article.id)}
-              className="group flex gap-3 cursor-default"
-            >
+            <Link href={`/article/${article.id}`} className="group flex gap-3">
               <span
-                className="mt-[3px] font-mono text-xs font-medium"
+                className="mt-[3px] shrink-0 font-mono text-xs font-medium"
                 style={{ color: accentColor }}
               >
                 {String(i + 2).padStart(2, "0")}
               </span>
               <div>
-                <h4 className="font-display text-[15px] font-medium leading-snug text-ink">
+                <h4 className="headline-link font-display text-[15px] font-medium leading-snug text-ink">
                   {article.title}
                 </h4>
                 {(article.content || article.summary) && (
@@ -45,7 +43,7 @@ export default function HeadlineSidebar({
                   {timeAgo(article.published_at)}
                 </p>
               </div>
-            </div>
+            </Link>
           </li>
         ))}
       </ul>

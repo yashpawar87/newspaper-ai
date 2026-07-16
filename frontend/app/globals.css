@@ -33,3 +33,29 @@ body {
 .animate-ticker:hover {
   animation-play-state: paused;
 }
+
+/* Shared headline link hover style — animated underline slides in from left */
+.headline-link {
+  position: relative;
+  display: inline;
+}
+
+.headline-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 0;
+  height: 1.5px;
+  background-color: currentColor;
+  transition: width 0.25s ease;
+}
+
+.headline-link:hover::after,
+.group:hover .headline-link::after {
+  width: 100%;
+}
+
+.headline-link:hover {
+  opacity: 0.75;
+}

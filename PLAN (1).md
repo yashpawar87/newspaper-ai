@@ -1,74 +1,60 @@
-# Railway Deployment Plan
-https://github.com/yashpawar87/newspaper-ai.git
+# In-App Article Reading And Hover Upgrade
+Keeps people inside the newspaper experience instead of immediately bouncing to an external tab — matches how a real newspaper works (you read the page you're on, then optionally seek out the original wire source).
+
 ## Summary
-Deploy this as a Railway monorepo with 3 Railway resources: existing `Postgres`, new `backend` FastAPI service, and new `frontend` Next.js service. Railway’s monorepo docs recommend separate services with separate root directories, so use `/backend` and `/frontend`.
+Build a canonical `/article/[id]` page and route every article surface to it instead of opening the publisher URL. Article opens will count as engagement for reranking. Missing full content will be scraped in the backend background enrichment cycle after RSS fetches, with robots.txt checks still enforced. The UI will keep source attribution by name, but will not show an original publisher link, per your preference.
 
-Docs refs: [Railway monorepo](https://docs.railway.com/deployments/monorepo), [FastAPI](https://docs.railway.com/guides/fastapi), [Next.js](https://docs.railway.com/guides/nextjs), [PostgreSQL](https://docs.railway.com/databases/postgresql).
+## Key Changes
+- Add a Next.js route at `/article/[id]` that fetches `GET /articles/{id}` and renders a newspaper-style article page inside the existing `ZoomablePage`.
+- Update hero, grid cards, sidebar headlines, homepage articles, category articles, and breaking ticker to link to `/article/${article.id}`.
+- Move click tracking to in-app article opens:
+  - Article links call `POST /articles/{id}/click` before or during navigation.
+  - The article detail page also safely registers an open once, so direct links count too.
+- Create shared article presentation helpers/components:
+  - A reusable headline link style with a deliberate hover treatment instead of a plain underline.
+  - A reusable article body renderer so `HeroArticle`, `ArticleCard`, `HeadlineSidebar`, and `/article/[id]` do not duplicate paragraph logic.
+- Re-enable backend background enrichment:
+  - After each RSS fetch cycle, run an enrichment batch for articles with `content IS NULL`.
+  - Use existing `trafilatura` extraction and `robots.txt` guard.
+  - Store scraped text in `articles.content` with `content_source="scraped"`.
+  - Keep failures non-blocking: failed scrape leaves the article as summary-only.
+- Add config knobs:
+  - `ENRICH_INTERVAL_MINUTES=30`
+  - `ENRICH_BATCH_SIZE=10`
+  - `ENABLE_ARTICLE_SCRAPING=true`
+- Keep article page fallback behavior:
+  - If scraped/feed full content exists, render it as the article body.
+  - If only summary exists, render the summary as the available article body and show a subtle “summary only” disclosure.
+  - Do not render a publisher link.
 
-## Key Changes / Deployment Steps
-- Create a GitHub repo from `/Users/yashpawar/rss-newspaper` and push the full project.
-- In Railway, create/import two services from the same GitHub repo:
-  - `backend`: Root Directory `/backend`
-  - `frontend`: Root Directory `/frontend`
-- Backend service settings:
-  - Start command: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
-  - Healthcheck path: `/health`
-  - Variables:
-    - `DATABASE_URL=${{Postgres.DATABASE_URL}}` using the actual Railway Postgres service name if not `Postgres`
-    - `FETCH_INTERVAL_MINUTES=15`
-    - `SEED_ON_STARTUP=true`
-    - `ADMIN_TOKEN=<strong-random-secret>`
-    - `ALLOWED_ORIGINS=https://<frontend-domain>`
-- Frontend service settings:
-  - Build command: `npm run build`
-  - Start command: `npm run start -- -p $PORT`
-  - Variables:
-    - `NEXT_PUBLIC_API_URL=https://<backend-domain>`
-- Deployment order:
-  1. Deploy backend first.
-  2. Generate backend public domain.
-  3. Deploy frontend with `NEXT_PUBLIC_API_URL` set to backend domain.
-  4. Generate frontend public domain.
-  5. Update backend `ALLOWED_ORIGINS` to frontend domain and redeploy backend.
-  6. Trigger initial feed population with:
-     `POST https://<backend-domain>/admin/fetch` using `X-Admin-Token`.
-
-## Interfaces / URLs
-- Backend public API:
-  - `GET /health`
-  - `GET /categories`
-  - `GET /articles?category=tech&page=1&limit=15`
-  - `GET /trending?limit=10`
-  - `POST /admin/fetch`
-- Frontend public pages:
-  - `/`
-  - `/top-stories`
-  - `/latest-stories`
-  - `/tech`
-  - `/business`
-  - `/entertainment`
-  - `/sports`
-  - `/lifestyle-fashion`
-  - `/cricket`
+## Hover Interaction
+- Replace bare underline with a shared headline hover style:
+  - Slight text color/accent shift.
+  - Thin animated rule or highlight behind/under the headline.
+  - Image zoom remains on image-backed cards.
+  - Cursor and focus states clearly indicate in-app navigation.
+- Apply the same interaction consistently to:
+  - Hero headline
+  - Article card headline
+  - Sidebar headline
+  - Breaking ticker item
 
 ## Test Plan
-- Backend deployment:
-  - Visit `https://<backend-domain>/health`.
-  - Confirm `status` is `ok`, `source_count` is `8`, and feed `last_error` values are empty after fetch.
-- Database population:
-  - Run `POST /admin/fetch`.
-  - Confirm `/health` article count increases.
-  - Confirm `/articles?category=sports` returns articles.
-- Frontend deployment:
-  - Visit frontend homepage and each category page.
-  - Confirm category pages no longer show “No ranked stories” after fetch.
-  - Click an article and confirm no CORS error in browser console.
-- Railway logs:
-  - Backend logs should show no Postgres connection errors.
-  - Frontend logs should show successful Next.js start on Railway `$PORT`.
+- Backend:
+  - Run Python compile check.
+  - Run a fetch/enrich cycle against a temp database and confirm articles with missing `content` are enriched when robots allow it.
+  - Confirm failed scraping does not crash scheduler.
+  - Confirm `POST /articles/{id}/click` increments `click_count` and updates `rank_score`.
+- Frontend:
+  - Run `npm run build`.
+  - Verify `/article/[id]` renders with full content when present.
+  - Verify summary-only articles still render without breaking.
+  - Verify all article surfaces navigate internally, not to `article.link`.
+  - Verify no publisher link is shown.
+  - Verify hover treatment appears on hero, cards, sidebar, and ticker.
 
 ## Assumptions
-- Deployment method is GitHub monorepo.
-- Railway Postgres already exists in the same Railway project.
-- If the Postgres service is not named `Postgres`, use that exact service namespace in the variable reference.
-- The backend scheduler remains inside the backend service for v1; no separate worker service is needed yet.
+- In-app opens, not publisher exits, are the ranking engagement signal.
+- Original publisher URL remains stored in the database but is not displayed in the UI.
+- Scraping is allowed to run for active sources when `ENABLE_ARTICLE_SCRAPING=true`, but the extractor still fails closed when robots.txt disallows scraping.
+- Background enrichment is preferred over lazy scraping on article open.
