@@ -12,11 +12,14 @@ class Settings(BaseSettings):
 
     @property
     def sqlalchemy_database_url(self) -> str:
-        # Some hosted Postgres providers still expose postgres:// URLs.
-        # SQLAlchemy expects the postgresql:// dialect name.
-        if self.database_url.startswith("postgres://"):
-            return self.database_url.replace("postgres://", "postgresql://", 1)
-        return self.database_url
+        # Normalise postgres:// -> postgresql:// first (some providers use the old name).
+        url = self.database_url
+        if url.startswith("postgres://"):
+            url = url.replace("postgres://", "postgresql://", 1)
+        # Switch to the pg8000 dialect (pure-Python, no libpq required).
+        if url.startswith("postgresql://"):
+            url = url.replace("postgresql://", "postgresql+pg8000://", 1)
+        return url
 
     @property
     def cors_origins(self) -> list[str]:
