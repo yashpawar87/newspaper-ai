@@ -46,6 +46,17 @@ export default async function ArticlePage({
           )}
         </div>
 
+        {/* Image */}
+        {article.image_url && (
+          <div className="mb-6 relative aspect-[21/9] overflow-hidden rounded bg-ink/5">
+            <img
+              src={article.image_url}
+              alt=""
+              className="h-full w-full object-cover"
+            />
+          </div>
+        )}
+
         {/* Headline */}
         <h1 className="mb-8 font-display text-4xl font-medium leading-tight text-ink sm:text-5xl">
           {article.title}
