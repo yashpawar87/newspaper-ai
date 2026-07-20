@@ -26,7 +26,7 @@ export default async function ArticlePage({
       {/* Client component that fires click tracking once on mount */}
       <ArticleClickTracker articleId={article.id} />
 
-      <article className="px-12 py-14 sm:px-20">
+      <article className="mx-auto max-w-3xl px-8 py-14 sm:px-12">
         {/* Category + meta row */}
         <div className="mb-5 flex items-center gap-3 border-b border-ink/15 pb-5">
           <span
@@ -48,7 +48,7 @@ export default async function ArticlePage({
 
         {/* Image */}
         {article.image_url && (
-          <div className="mb-6 relative aspect-[21/9] overflow-hidden rounded bg-ink/5">
+          <div className="mb-8 relative aspect-[21/9] overflow-hidden rounded bg-ink/5">
             <img
               src={article.image_url}
               alt=""
@@ -58,20 +58,20 @@ export default async function ArticlePage({
         )}
 
         {/* Headline */}
-        <h1 className="mb-8 font-display text-4xl font-medium leading-tight text-ink sm:text-5xl">
+        <h1 className="mb-10 font-display text-4xl font-medium leading-tight text-ink sm:text-5xl">
           {article.title}
         </h1>
 
         {/* Body */}
         {paragraphs.length > 0 ? (
-          <div className="columns-1 gap-10 text-[15px] leading-relaxed text-ink/85 sm:columns-2 [column-rule:1px_solid_var(--color-ink-secondary)]">
+          <div className="space-y-6 text-[17px] leading-[1.7] text-ink/85">
             {paragraphs.map((p, i) => (
               <p
                 key={i}
                 className={
                   i === 0
-                    ? "mb-4 break-inside-avoid first-letter:float-left first-letter:mr-2 first-letter:mt-1 first-letter:font-display first-letter:text-6xl first-letter:font-medium first-letter:leading-[0.8]"
-                    : "mb-4 break-inside-avoid"
+                    ? "first-letter:float-left first-letter:mr-2 first-letter:mt-1.5 first-letter:font-display first-letter:text-[5rem] first-letter:font-medium first-letter:leading-[0.7]"
+                    : ""
                 }
               >
                 {p}
