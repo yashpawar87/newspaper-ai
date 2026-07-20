@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Article } from "@/lib/types";
-import { timeAgo, toParagraphs } from "@/lib/api";
+import { timeAgo, excerpt } from "@/lib/api";
 
 export default function HeroArticle({
   article,
@@ -11,8 +11,7 @@ export default function HeroArticle({
   article: Article;
   accentColor: string;
 }) {
-  const bodyText = article.content ?? article.summary;
-  const paragraphs = bodyText ? toParagraphs(bodyText) : [];
+  const shortText = excerpt(article, 400); // give hero more text
   const isAiSummary = article.content_source === "ai_summary";
   const isScraped = article.content_source === "scraped";
 
@@ -59,21 +58,10 @@ export default function HeroArticle({
         {timeAgo(article.published_at)}
       </p>
 
-      {paragraphs.length > 0 && (
-        <div className="columns-1 gap-8 text-[15px] leading-relaxed text-ink/85 sm:columns-2 [column-rule:1px_solid_var(--color-ink-secondary)]">
-          {paragraphs.map((p, i) => (
-            <p
-              key={i}
-              className={
-                i === 0
-                  ? "mb-4 break-inside-avoid first-letter:float-left first-letter:mr-2 first-letter:mt-1 first-letter:font-display first-letter:text-6xl first-letter:font-medium first-letter:leading-[0.8]"
-                  : "mb-4 break-inside-avoid"
-              }
-            >
-              {p}
-            </p>
-          ))}
-        </div>
+      {shortText && (
+        <p className="text-[15px] leading-relaxed text-ink/85 first-letter:float-left first-letter:mr-2 first-letter:mt-1 first-letter:font-display first-letter:text-6xl first-letter:font-medium first-letter:leading-[0.8]">
+          {shortText}
+        </p>
       )}
     </article>
   );

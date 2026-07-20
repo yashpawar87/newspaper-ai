@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Article } from "@/lib/types";
-import { timeAgo, toParagraphs } from "@/lib/api";
+import { timeAgo, excerpt } from "@/lib/api";
 
 export default function HeadlineSidebar({
   articles,
@@ -33,11 +33,9 @@ export default function HeadlineSidebar({
                   {article.title}
                 </h4>
                 {(article.content || article.summary) && (
-                  <div className="mt-1 space-y-1.5 text-[12px] leading-relaxed text-ink/75">
-                    {toParagraphs(article.content || article.summary || "").map((p, pIndex) => (
-                      <p key={pIndex}>{p}</p>
-                    ))}
-                  </div>
+                  <p className="mt-1 text-[12px] leading-relaxed text-ink/75">
+                    {excerpt(article, 120)}
+                  </p>
                 )}
                 <p className="mt-0.5 font-mono text-[11px] text-ink/50">
                   {timeAgo(article.published_at)}

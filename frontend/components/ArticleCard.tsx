@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Article } from "@/lib/types";
-import { timeAgo, toParagraphs } from "@/lib/api";
+import { timeAgo, excerpt } from "@/lib/api";
 
 export default function ArticleCard({
   article,
@@ -11,8 +11,7 @@ export default function ArticleCard({
   article: Article;
   size?: "sm" | "md";
 }) {
-  const bodyText = article.content ?? article.summary;
-  const paragraphs = bodyText ? toParagraphs(bodyText) : [];
+  const shortText = excerpt(article, size === "sm" ? 140 : 220);
 
   return (
     <article>
@@ -47,12 +46,10 @@ export default function ArticleCard({
         {timeAgo(article.published_at)}
       </p>
 
-      {paragraphs.length > 0 && (
-        <div className="space-y-2 text-[13px] leading-relaxed text-ink/75">
-          {paragraphs.map((p, i) => (
-            <p key={i}>{p}</p>
-          ))}
-        </div>
+      {shortText && (
+        <p className="text-[13px] leading-relaxed text-ink/75">
+          {shortText}
+        </p>
       )}
     </article>
   );
