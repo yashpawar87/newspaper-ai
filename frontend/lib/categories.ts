@@ -14,7 +14,6 @@ export const CATEGORY_THEMES: CategoryTheme[] = [
   { slug: "business", name: "Business", color: "#3D6B35" },
   { slug: "entertainment", name: "Entertainment", color: "#6B3FA0" },
   { slug: "sports", name: "Sports", color: "#C1622B" },
-  { slug: "lifestyle-fashion", name: "Lifestyle & Fashion", color: "#9C4F63" },
   { slug: "cricket", name: "Cricket", color: "#1F6F5C" },
 ];
 
