@@ -7,25 +7,25 @@ export default function MarketWatch() {
   ];
 
   return (
-    <div className="mb-10 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6 border-b border-ink/15 pb-4">
+    <div className="flex h-12 w-full items-center gap-8 border-y border-ink/20 bg-paper px-12 sm:px-20">
       {/* Label */}
-      <div className="font-mono text-[11px] font-semibold uppercase tracking-[0.15em] text-ink/40 shrink-0">
-        Market Watch
+      <div className="font-mono text-[10px] uppercase tracking-[0.15em] text-ink/60 shrink-0">
+        MARKET WATCH
       </div>
 
       {/* Grid container for the 4 tickers */}
-      <div className="flex flex-1 flex-wrap items-center gap-x-6 gap-y-2 sm:justify-between">
+      <div className="flex flex-1 items-center gap-8 overflow-hidden">
         {data.map((item, index) => (
-          <div key={index} className="flex items-baseline gap-2 whitespace-nowrap">
-            <span className="font-display font-bold text-ink">
+          <div key={index} className="flex items-center gap-1.5 whitespace-nowrap">
+            <span className="font-mono text-[10px] uppercase text-ink">
               {item.label}
             </span>
-            <span className="font-display font-bold text-ink">
+            <span className="font-mono text-[12px] font-bold text-ink">
               {item.value}
             </span>
             <span
-              className={`font-mono text-[12px] font-medium tracking-tight ${
-                item.isPositive ? "text-[#4b7a47]" : "text-ink/60"
+              className={`font-mono text-[10px] font-medium tracking-tight ${
+                item.isPositive ? "text-[#2e7d32]" : "text-[#c62828]"
               }`}
             >
               {item.change} {item.changePct}
