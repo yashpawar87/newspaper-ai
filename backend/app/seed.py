@@ -18,7 +18,6 @@ CATEGORIES = [
     {"slug": "business", "name": "Business", "sort_order": 3},
     {"slug": "entertainment", "name": "Entertainment", "sort_order": 4},
     {"slug": "sports", "name": "Sports", "sort_order": 5},
-    {"slug": "cricket", "name": "Cricket", "sort_order": 7},
 ]
 
 SOURCES = [
@@ -28,7 +27,6 @@ SOURCES = [
     ("business", "OneIndia", "https://www.oneindia.com/rss/feeds/news-business-fb.xml"),
     ("entertainment", "OneIndia", "https://www.oneindia.com/rss/feeds/news-entertainment-fb.xml"),
     ("sports", "The Hindu", "https://www.thehindu.com/sport/feeder/default.rss"),
-    ("cricket", "Times of India", "https://timesofindia.indiatimes.com/rssfeeds/54829575.cms"),
 ]
 
 

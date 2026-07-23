@@ -14,7 +14,6 @@ export const CATEGORY_THEMES: CategoryTheme[] = [
   { slug: "business", name: "Business", color: "#3D6B35" },
   { slug: "entertainment", name: "Entertainment", color: "#6B3FA0" },
   { slug: "sports", name: "Sports", color: "#C1622B" },
-  { slug: "cricket", name: "Cricket", color: "#1F6F5C" },
 ];
 
 export function getCategoryTheme(slug: string): CategoryTheme {
