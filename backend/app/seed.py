@@ -22,11 +22,11 @@ CATEGORIES = [
 
 SOURCES = [
     ("top-stories", "Times of India", "https://timesofindia.indiatimes.com/rssfeedstopstories.cms"),
-    ("latest-stories", "India Today", "https://www.indiatoday.in/rss/home"),
-    ("tech", "TechGenyz", "https://feeds.feedburner.com/techgenyz"),
-    ("business", "OneIndia", "https://www.oneindia.com/rss/feeds/news-business-fb.xml"),
-    ("entertainment", "OneIndia", "https://www.oneindia.com/rss/feeds/news-entertainment-fb.xml"),
-    ("sports", "The Hindu", "https://www.thehindu.com/sport/feeder/default.rss"),
+    ("latest-stories", "Times of India", "https://timesofindia.indiatimes.com/rssfeedmostrecent.cms"),
+    ("sports", "Times of India", "https://timesofindia.indiatimes.com/rssfeeds/4719148.cms"),
+    ("business", "Times of India", "https://timesofindia.indiatimes.com/rssfeeds/1898055.cms"),
+    ("entertainment", "Times of India", "https://timesofindia.indiatimes.com/rssfeeds/1081479906.cms"),
+    ("tech", "Economic Times", "https://economictimes.indiatimes.com/tech/rssfeeds/13357270.cms"),
 ]
 
 
