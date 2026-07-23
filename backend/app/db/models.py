@@ -38,7 +38,7 @@ class Source(Base):
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     # Reserved for a future summarization/enrichment pipeline. v1 does not
     # scrape full source pages; teaser-only feeds stay teaser-only.
-    scraping_allowed: Mapped[bool] = mapped_column(Boolean, default=False)
+    scraping_allowed: Mapped[bool] = mapped_column(Boolean, default=True)
     last_fetched_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     last_success_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     failure_count: Mapped[int] = mapped_column(Integer, default=0)

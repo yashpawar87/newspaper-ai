@@ -68,7 +68,7 @@ def seed_defaults(db: Session) -> None:
                 feed_url=feed_url,
                 weight=1.0,
                 is_active=True,
-                scraping_allowed=False,
+                scraping_allowed=True,
             )
         )
 
