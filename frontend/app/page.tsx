@@ -4,6 +4,7 @@ import ArticleCard from "@/components/ArticleCard";
 import HeroArticle from "@/components/HeroArticle";
 import HeadlineSidebar from "@/components/HeadlineSidebar";
 import ZoomablePage from "@/components/ZoomablePage";
+import MarketWatch from "@/components/MarketWatch";
 
 export const revalidate = 60;
 
@@ -32,6 +33,7 @@ export default async function HomePage() {
   return (
     <ZoomablePage>
       <div className="px-12 py-14 sm:px-20">
+        <MarketWatch />
         <h1 className="sr-only">Top-ranked stories across all categories</h1>
         <div className="grid grid-cols-1 gap-8 border-b border-ink/15 pb-8 lg:grid-cols-[2fr_1fr]">
           <HeroArticle article={hero} accentColor={accentColor} />
